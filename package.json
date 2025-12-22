@@ -1,0 +1,22 @@
+{
+  "name": "sri-manjunatha-caterers",
+  "version": "1.0.0",
+  "description": "Website for Sri Manjunatha Caterers - Premium catering services",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -p 8000 -o",
+    "serve": "http-server -p 8000"
+  },
+  "keywords": [
+    "catering",
+    "food",
+    "restaurant",
+    "website"
+  ],
+  "author": "Sri Manjunatha Caterers",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
+

@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Images (if you add them)
+images/*.jpg
+images/*.jpeg
+images/*.png
+images/*.gif
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
