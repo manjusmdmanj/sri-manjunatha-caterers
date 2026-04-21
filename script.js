@@ -1,9 +1,9 @@
 // Configuration - UPDATE THESE WITH YOUR DETAILS
 const CONFIG = {
     whatsappNumber: '919066302632', // WhatsApp number (country code + number, no + or spaces)
-    contactPhone: '+91 90663 02632', // Your phone number for display
+    contactPhones: ['+91 90663 02632', '+91 99807 57024', '+91 70909 23072'], // Phone numbers for display
     contactEmail: 'info@srimanjunathacaterers.com', // Your email
-    contactAddress: 'Your Business Address, City, State, PIN Code' // Your address
+    contactAddress: '#43, 18th Main Road, Venkateshwara Talkies Road, Muneshwara Block, Bangaluru 560026' // Your address
 };
 
 // Menu Packages - UPDATE THESE WITH YOUR ACTUAL MENUS AND PRICES
@@ -467,13 +467,11 @@ function selectPackage(packageName) {
 function initializeMenu() {
     const menuGrid = document.getElementById('menuGrid');
     const menuTabs = document.querySelectorAll('.menu-tab');
-    const itemsSelect = document.getElementById('items');
 
-    // Render menu items
-    renderMenuItems('all');
-
-    // Populate select dropdown for order form
-    populateMenuSelect();
+    // Render menu items only if menu grid exists on page
+    if (menuGrid) {
+        renderMenuItems('all');
+    }
 
     // Menu tab functionality
     menuTabs.forEach(tab => {
@@ -491,6 +489,8 @@ function initializeMenu() {
 
 function renderMenuItems(category) {
     const menuGrid = document.getElementById('menuGrid');
+    if (!menuGrid) return;
+
     let filteredItems = menuItems;
 
     if (category !== 'all') {
@@ -511,13 +511,6 @@ function renderMenuItems(category) {
             </div>
         </div>
     `).join('');
-}
-
-function populateMenuSelect() {
-    const itemsSelect = document.getElementById('items');
-    itemsSelect.innerHTML = menuItems.map(item => 
-        `<option value="${item.name}">${item.name}</option>`
-    ).join('');
 }
 
 // Order Form Functions
@@ -545,12 +538,17 @@ function handleOrderSubmit(e) {
         formObject[key] = value;
     });
 
-    // Get selected items
-    const itemsSelect = document.getElementById('items');
-    const selectedItems = Array.from(itemsSelect.selectedOptions).map(option => option.value);
+    // Get custom typed items (comma/newline separated)
+    const customItemsInput = document.getElementById('customItems');
+    const customItems = customItemsInput
+        ? customItemsInput.value
+              .split(/\n|,/)
+              .map(item => item.trim())
+              .filter(Boolean)
+        : [];
     
     // Build WhatsApp message
-    const message = buildWhatsAppMessage(formObject, selectedItems);
+    const message = buildWhatsAppMessage(formObject, customItems);
     
     // Open WhatsApp
     const whatsappUrl = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`;
@@ -565,8 +563,8 @@ function handleOrderSubmit(e) {
     }, 1000);
 }
 
-function buildWhatsAppMessage(formData, selectedItems) {
-    let message = `🍽️ *NEW ORDER - Sri Manjunatha Caterers*\n\n`;
+function buildWhatsAppMessage(formData, customItems) {
+    let message = `🍽️ *NEW ORDER - Sri Manjunatha Caterings*\n\n`;
     message += `*Customer Details:*\n`;
     message += `Name: ${formData.name}\n`;
     message += `Phone: ${formData.phone}\n`;
@@ -584,9 +582,9 @@ function buildWhatsAppMessage(formData, selectedItems) {
         message += `Location: ${formData.location}\n`;
     }
     message += `\n*Menu Selection:*\n`;
-    if (selectedItems.length > 0) {
-        message += `Custom Selected Items:\n`;
-        selectedItems.forEach(item => {
+    if (customItems.length > 0) {
+        message += `Custom Menu Items:\n`;
+        customItems.forEach(item => {
             message += `• ${item}\n`;
         });
         message += `\n*Note: Prices for custom menu will be provided based on current market rates.*\n`;
@@ -614,7 +612,9 @@ function initializeContactInfo() {
     const footerWhatsapp = document.getElementById('footerWhatsapp');
     const floatingWhatsApp = document.getElementById('floatingWhatsApp');
 
-    if (contactPhone) contactPhone.textContent = CONFIG.contactPhone;
+    if (contactPhone) {
+        contactPhone.innerHTML = CONFIG.contactPhones.join('<br>');
+    }
     if (contactEmail) contactEmail.textContent = CONFIG.contactEmail;
     if (contactAddress) contactAddress.textContent = CONFIG.contactAddress;
 
@@ -640,6 +640,10 @@ function initializeAnimations() {
     serviceCards.forEach((card, index) => {
         card.style.animationDelay = `${index * 0.1}s`;
     });
+    // Fallback: ensure service cards become visible even if observer timing fails
+    setTimeout(() => {
+        serviceCards.forEach(card => card.classList.add('animate-in'));
+    }, 300);
 
     // Add pulse animation to floating WhatsApp button
     const floatingBtn = document.getElementById('floatingWhatsApp');
@@ -654,6 +658,13 @@ function initializeAnimations() {
 }
 
 function animateOnScroll() {
+    if (!('IntersectionObserver' in window)) {
+        document.querySelectorAll('.service-card, .menu-item, .gallery-item, .contact-item, .menu-package-card').forEach(el => {
+            el.classList.add('animate-in');
+        });
+        return;
+    }
+
     const observerOptions = {
         threshold: 0.2,
         rootMargin: '0px 0px -100px 0px'
