@@ -6,6 +6,8 @@ images/*.jpg
 images/*.jpeg
 images/*.png
 images/*.gif
+!images/about-catering.png
+!images/hero-catering-bg.png
 
 # OS files
 .DS_Store
