@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://yoursite.com/sitemap.xml
+Sitemap: https://manjusmdmanj.github.io/sri-manjunatha-caterers/sitemap.xml
 
